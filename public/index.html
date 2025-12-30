@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ἥφαιστος - The Forge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-blue-dark: #0099aa;
+            --black: #000000;
+            --dark-gray: #0a0a0a;
+            --medium-gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-code: #88ffff;
+            --border: #333333;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Greek Meander Pattern */
+        .meander-border {
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--black) 0%, 
+                var(--black) 10%,
+                var(--neon-blue) 10%,
+                var(--neon-blue) 12%,
+                var(--black) 12%,
+                var(--black) 22%,
+                var(--neon-blue) 22%,
+                var(--neon-blue) 24%,
+                var(--black) 24%,
+                var(--black) 34%,
+                var(--neon-blue) 34%,
+                var(--neon-blue) 36%,
+                var(--black) 36%,
+                var(--black) 46%,
+                var(--neon-blue) 46%,
+                var(--neon-blue) 48%,
+                var(--black) 48%,
+                var(--black) 58%,
+                var(--neon-blue) 58%,
+                var(--neon-blue) 60%,
+                var(--black) 60%,
+                var(--black) 70%,
+                var(--neon-blue) 70%,
+                var(--neon-blue) 72%,
+                var(--black) 72%,
+                var(--black) 82%,
+                var(--neon-blue) 82%,
+                var(--neon-blue) 84%,
+                var(--black) 84%,
+                var(--black) 94%,
+                var(--neon-blue) 94%,
+                var(--neon-blue) 96%,
+                var(--black) 96%,
+                var(--black) 100%
+            );
+        }
+
+        /* Main Container */
+        .container {
+            display: grid;
+            grid-template-rows: 70px 1fr 60px;
+            height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            background: var(--dark-gray);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--neon-blue);
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
+
+        .system-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .vram-gauge {
+            width: 160px;
+        }
+
+        .gauge-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .gauge-track {
+            height: 6px;
+            background: var(--medium-gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            background: var(--neon-blue);
+            border-radius: 3px;
+            width: 65%;
+        }
+
+        .project-id {
+            background: var(--medium-gray);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            overflow: hidden;
+        }
+
+        /* LEFT PANEL - Input */
+        .left-panel {
+            background: var(--dark-gray);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #job-spec {
+            width: 100%;
+            height: 150px;
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            resize: none;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        #job-spec:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+        }
+
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .api-tag {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .api-tag:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .input-group input {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+        }
+
+        /* CENTER PANEL - Agent Relay */
+        .center-panel {
+            background: var(--black);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .agent-sequence {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .agent-card {
+            background: var(--dark-gray);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+
+        .agent-card.active {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 1px var(--neon-blue);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .agent-index {
+            width: 28px;
+            height: 28px;
+            background: var(--neon-blue);
+            color: var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .agent-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--neon-blue);
+        }
+
+        .agent-status {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+        }
+
+        .agent-status.active {
+            background: var(--neon-blue);
+            color: var(--black);
+        }
+
+        .agent-status.completed {
+            background: var(--success);
+            color: var(--black);
+        }
+
+        .agent-output {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-code);
+            max-height: 120px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 12px;
+        }
+
+        /* RIGHT PANEL - State & Alerts */
+        .right-panel {
+            background: var(--dark-gray);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .state-container {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-code);
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .alerts-container {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alerts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .alerts-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neon-blue);
+        }
+
+        .alerts-count {
+            background: var(--warning);
+            color: var(--black);
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .alerts-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-item {
+            background: var(--dark-gray);
+            border-left: 3px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 2px;
+        }
+
+        .alert-item.error {
+            border-left-color: var(--error);
+        }
+
+        .alert-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        .alert-item.info {
+            border-left-color: var(--neon-blue);
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .alert-icon {
+            font-size: 12px;
+            margin-top: 1px;
+        }
+
+        .alert-item.error .alert-icon {
+            color: var(--error);
+        }
+
+        .alert-item.warning .alert-icon {
+            color: var(--warning);
+        }
+
+        .alert-item.info .alert-icon {
+            color: var(--neon-blue);
+        }
+
+        .alert-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--dark-gray);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            background: var(--medium-gray);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .control-btn.primary {
+            background: var(--neon-blue);
+            border-color: var(--neon-blue);
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        .control-btn.primary:hover {
+            background: var(--neon-blue-dark);
+            border-color: var(--neon-blue-dark);
+        }
+
+        .control-btn.danger {
+            background: var(--error);
+            border-color: var(--error);
+            color: var(--text-primary);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .control-btn:disabled:hover {
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+
+        .status-item i {
+            color: var(--neon-blue);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--medium-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--light-gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- Greek Meander Top Border -->
+    <div class="meander-border"></div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hammer"></i>
+                </div>
+                <div class="logo-text">Ἥφαιστος</div>
+                <div class="logo-subtitle mono-font">THE FORGE</div>
+            </div>
+
+            <div class="system-info">
+                <div class="vram-gauge">
+                    <div class="gauge-label">
+                        <span>VRAM</span>
+                        <span id="vramText">9.8/14.7 GB</span>
+                    </div>
+                    <div class="gauge-track">
+                        <div class="gauge-fill" id="vramFill"></div>
+                    </div>
+                </div>
+                <div class="project-id mono-font" id="projectId">PROJ-7A3B9C</div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- LEFT PANEL -->
+            <aside class="left-panel">
+                <div class="panel-section">
+                    <div class="section-title">
+                        <i class="fas fa-terminal"></i>
+                        <span>Job Specification</span>
+                    </div>
+                    <textarea id="job-spec" placeholder="Paste client requirements here..."></textarea>
+                </div>
+
+                <div class="panel-section">
+                    <div class="section-title">
+                        <i class="fas fa-book"></i>
+                        <span>API Library</span>
+                    </div>
+                    <div class="api-grid" id="apiLibrary">
+                        <!-- API tags will be added dynamically -->
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <div class="section-title">
+                        <i class="fas fa-cog"></i>
+                        <span>Project Settings</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Client Name</label>
+                        <input type="text" id="clientName" placeholder="Enter client name">
+                    </div>
+                    <div class="input-group">
+                        <label>Budget ($)</label>
+                        <input type="number" id="budget" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Deadline</label>
+                        <input type="date" id="deadline">
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER PANEL -->
+            <section class="center-panel">
+                <div class="agent-sequence" id="agentSequence">
+                    <!-- Agent cards will be added dynamically -->
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL -->
+            <aside class="right-panel">
+                <div class="panel-section">
+                    <div class="section-title">
+                        <i class="fas fa-code"></i>
+                        <span>Project State</span>
+                    </div>
+                    <div class="state-container mono-font" id="stateViewer">
+{
+  "project_id": "PROJ-7A3B9C",
+  "status": "building",
+  "current_agent": "frontend_003",
+  "progress": 30,
+  "features": ["IoT Integration", "Crop Tracking"],
+  "stack": ["React", "Node.js", "PostgreSQL"],
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+                    </div>
+                </div>
+
+                <div class="alerts-container">
+                    <div class="alerts-header">
+                        <div class="alerts-title">Active Alerts</div>
+                        <div class="alerts-count" id="alertCount">3</div>
+                    </div>
+                    <div class="alerts-list" id="alertsList">
+                        <!-- Alerts will be added dynamically -->
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="controls">
+                <button class="control-btn" id="btnStep">
+                    <i class="fas fa-step-forward"></i>
+                    <span>Step</span>
+                </button>
+                <button class="control-btn primary" id="btnRun">
+                    <i class="fas fa-play"></i>
+                    <span>Run All</span>
+                </button>
+                <button class="control-btn" id="btnPause" disabled>
+                    <i class="fas fa-pause"></i>
+                    <span>Pause</span>
+                </button>
+                <button class="control-btn" id="btnFlush">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Flush VRAM</span>
+                </button>
+                <button class="control-btn primary" id="btnDownload" disabled>
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </button>
+            </div>
+
+            <div class="status-bar">
+                <div class="status-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>Tesla T4</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span>ETA: <span id="etaTime">12:45</span></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Agents: <span id="agentProgress">3/10</span></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Greek Meander Bottom Border -->
+    <div class="meander-border"></div>
+
+    <script>
+        // Initialize data
+        const agents = [
+            { id: 1, name: 'Manager', status: 'completed', active: false, 
+              output: 'Roadmap generated with 5 features identified' },
+            { id: 2, name: 'Architect', status: 'completed', active: false,
+              output: 'System architecture defined with 3 microservices' },
+            { id: 3, name: 'Frontend Engineer', status: 'active', active: true,
+              output: 'Building React components for dashboard interface' },
+            { id: 4, name: 'Backend Engineer', status: 'pending', active: false,
+              output: 'Awaiting frontend API specifications' },
+            { id: 5, name: 'Database Admin', status: 'pending', active: false,
+              output: 'Ready for schema design' },
+            { id: 6, name: 'UI/UX Designer', status: 'pending', active: false,
+              output: 'Awaiting component structure' },
+            { id: 7, name: 'DevOps Agent', status: 'pending', active: false,
+              output: 'Docker configuration ready' },
+            { id: 8, name: 'QA Tester', status: 'pending', active: false,
+              output: 'Test cases prepared' },
+            { id: 9, name: 'Librarian (RAG)', status: 'pending', active: false,
+              output: 'API documentation indexed' },
+            { id: 10, name: 'Integrator', status: 'pending', active: false,
+              output: 'Ready for final validation' }
+        ];
+
+        const apis = [
+            'Stripe v3', 'Twilio API', 'Google Maps', 'SendGrid',
+            'AWS S3', 'Firebase Auth', 'Zillow v2', 'IoT Sensors',
+            'Stripe Billing', 'Twilio Verify', 'Mapbox', 'PostgreSQL',
+            'Redis', 'Socket.io', 'Chart.js', 'D3.js'
+        ];
+
+        const alerts = [
+            { type: 'warning', message: 'Frontend: Missing React Router dependency', time: '10:22:11' },
+            { type: 'error', message: 'Integrator: Incompatible Node.js version detected', time: '10:25:07' },
+            { type: 'info', message: 'VRAM usage approaching threshold (85%)', time: '10:26:33' }
+        ];
+
+        let isRunning = false;
+        let runInterval = null;
+
+        // Initialize UI
+        function initializeUI() {
+            // Initialize API library
+            const apiLibrary = document.getElementById('apiLibrary');
+            apis.forEach(api => {
+                const tag = document.createElement('div');
+                tag.className = 'api-tag mono-font';
+                tag.textContent = api;
+                tag.title = `Click to add ${api}`;
+                apiLibrary.appendChild(tag);
+            });
+
+            // Initialize agent sequence
+            const agentSequence = document.getElementById('agentSequence');
+            agents.forEach(agent => {
+                agentSequence.appendChild(createAgentCard(agent));
+            });
+
+            // Initialize alerts
+            updateAlerts();
+
+            // Setup event listeners
+            document.getElementById('btnStep').addEventListener('click', stepAgent);
+            document.getElementById('btnRun').addEventListener('click', toggleRun);
+            document.getElementById('btnPause').addEventListener('click', pauseRun);
+            document.getElementById('btnFlush').addEventListener('click', flushVRAM);
+            document.getElementById('btnDownload').addEventListener('click', downloadProject);
+
+            // Simulate system updates
+            setInterval(updateSystemMetrics, 2000);
+            setInterval(updateVRAM, 3000);
+        }
+
+        // Create agent card
+        function createAgentCard(agent) {
+            const card = document.createElement('div');
+            card.className = `agent-card ${agent.active ? 'active' : ''}`;
+            card.innerHTML = `
+                <div class="agent-header">
+                    <div class="agent-index">${agent.id}</div>
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-status ${agent.status}">${agent.status.toUpperCase()}</div>
+                </div>
+                <div class="agent-output mono-font">${agent.output}</div>
+            `;
+            return card;
+        }
+
+        // Update alerts display
+        function updateAlerts() {
+            const alertsList = document.getElementById('alertsList');
+            const alertCount = document.getElementById('alertCount');
+            
+            alertsList.innerHTML = '';
+            alerts.forEach(alert => {
+                const alertItem = document.createElement('div');
+                alertItem.className = `alert-item ${alert.type}`;
+                alertItem.innerHTML = `
+                    <div class="alert-content">
+                        <div class="alert-icon">
+                            <i class="fas fa-${alert.type === 'error' ? 'exclamation-circle' : alert.type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                        </div>
+                        <div class="alert-text">${alert.message}</div>
+                    </div>
+                    <div class="alert-time mono-font">${alert.time}</div>
+                `;
+                alertsList.appendChild(alertItem);
+            });
+            
+            alertCount.textContent = alerts.length;
+        }
+
+        // Agent control functions
+        function stepAgent() {
+            const currentActive = agents.findIndex(a => a.active);
+            if (currentActive >= 0 && currentActive < agents.length - 1) {
+                agents[currentActive].active = false;
+                agents[currentActive].status = 'completed';
+                agents[currentActive + 1].active = true;
+                agents[currentActive + 1].status = 'active';
+                updateAgentDisplay();
+                updateProgress();
+                addAlert('info', `Agent ${currentActive + 2} activated: ${agents[currentActive + 1].name}`);
+            }
+        }
+
+        function toggleRun() {
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('btnRun').disabled = true;
+                document.getElementById('btnPause').disabled = false;
+                
+                runInterval = setInterval(() => {
+                    if (agents.every(a => a.status === 'completed')) {
+                        pauseRun();
+                        document.getElementById('btnDownload').disabled = false;
+                        addAlert('info', 'All agents completed. Project ready for download.');
+                        return;
+                    }
+                    stepAgent();
+                }, 2000);
+                
+                addAlert('info', 'Assembly line started - running all agents');
+            }
+        }
+
+        function pauseRun() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(runInterval);
+                document.getElementById('btnRun').disabled = false;
+                document.getElementById('btnPause').disabled = true;
+                addAlert('info', 'Assembly line paused');
+            }
+        }
+
+        function flushVRAM() {
+            document.getElementById('vramFill').style.width = '10%';
+            document.getElementById('vramText').textContent = '1.5/14.7 GB';
+            addAlert('warning', 'VRAM flushed - all agents unloaded from memory');
+        }
+
+        function downloadProject() {
+            alert('Downloading project PROJ-7A3B9C.zip...');
+        }
+
+        // Update agent display
+        function updateAgentDisplay() {
+            const sequence = document.getElementById('agentSequence');
+            sequence.innerHTML = '';
+            agents.forEach(agent => {
+                sequence.appendChild(createAgentCard(agent));
+            });
+        }
+
+        // Update progress indicators
+        function updateProgress() {
+            const completed = agents.filter(a => a.status === 'completed').length;
+            const progress = (completed / agents.length) * 100;
+            
+            // Update agent progress
+            document.getElementById('agentProgress').textContent = `${completed}/${agents.length}`;
+            
+            // Update ETA
+            const eta = new Date();
+            eta.setMinutes(eta.getMinutes() + Math.round((agents.length - completed) * 1.5));
+            document.getElementById('etaTime').textContent = 
+                eta.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // Add new alert
+        function addAlert(type, message) {
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            alerts.unshift({ type, message, time });
+            if (alerts.length > 10) alerts.pop();
+            updateAlerts();
+        }
+
+        // Update system metrics
+        function updateSystemMetrics() {
+            updateProgress();
+        }
+
+        // Update VRAM gauge
+        function updateVRAM() {
+            const current = 9.5 + Math.random() * 1.5;
+            const percentage = Math.min((current / 14.7) * 100, 100);
+            
+            document.getElementById('vramFill').style.width = `${percentage}%`;
+            document.getElementById('vramText').textContent = `${current.toFixed(1)}/14.7 GB`;
+            
+            if (percentage > 85) {
+                addAlert('warning', `VRAM usage high: ${current.toFixed(1)}GB (${Math.round(percentage)}%)`);
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeUI);
+    </script>
+</body>
+</html>
